@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import PaymentModal from './PaymentModal'
+import { API_BASE_URL } from '../config'
 
 const Invoices = ({ token, user }) => {
   const [invoices, setInvoices] = useState([])
@@ -10,7 +11,7 @@ const Invoices = ({ token, user }) => {
   useEffect(() => {
     const fetchInvoices = async () => {
       try {
-        const response = await axios.get('http://localhost:8000/invoices', {
+        const response = await axios.get(`${API_BASE_URL}/invoices`, {
           headers: { Authorization: `Bearer ${token}` }
         })
         setInvoices(response.data)
@@ -28,7 +29,7 @@ const Invoices = ({ token, user }) => {
         payload.payment_reference = paymentReference
       }
       
-      const response = await axios.put(`http://localhost:8000/invoices/${invoiceId}`, 
+      const response = await axios.put(`${API_BASE_URL}/invoices/${invoiceId}`, 
         payload, 
         { headers: { Authorization: `Bearer ${token}` } }
       )

@@ -1,6 +1,9 @@
 from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
+import os
 from sqlalchemy import create_engine, Column, Integer, String, Float, DateTime, ForeignKey, Enum
 from sqlalchemy.orm import declarative_base, sessionmaker, Session, relationship
 from pydantic import BaseModel
@@ -175,12 +178,16 @@ app = FastAPI(title="InvoiceBox Inc API", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
     expose_headers=["*"],
 )
+
+# Mount static files
+if os.path.exists("static"):
+    app.mount("/static", StaticFiles(directory="static"), name="static")
 
 # Routes
 @app.post("/register", response_model=Token)
@@ -363,6 +370,21 @@ def get_users(current_user: User = Depends(get_current_user), db: Session = Depe
     if current_user.role == UserRole.provider:
         return db.query(User).filter(User.role == UserRole.purchaser).all()
     return []
+
+# Serve React app
+@app.get("/{full_path:path}")
+async def serve_react_app(full_path: str):
+    if os.path.exists("static"):
+        if full_path.startswith("api/"):
+            raise HTTPException(status_code=404, detail="API endpoint not found")
+        
+        file_path = f"static/{full_path}"
+        if os.path.exists(file_path) and os.path.isfile(file_path):
+            return FileResponse(file_path)
+        else:
+            return FileResponse("static/index.html")
+    else:
+        raise HTTPException(status_code=404, detail="Static files not found")
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)

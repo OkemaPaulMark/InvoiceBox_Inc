@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
+import { API_BASE_URL } from '../config'
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -34,10 +35,10 @@ const Dashboard = ({ token, user }) => {
     const fetchData = async () => {
       try {
         const [statsResponse, analyticsResponse] = await Promise.all([
-          axios.get('http://localhost:8000/dashboard', {
+          axios.get(`${API_BASE_URL}/dashboard`, {
             headers: { Authorization: `Bearer ${token}` }
           }),
-          axios.get('http://localhost:8000/analytics', {
+          axios.get(`${API_BASE_URL}/analytics`, {
             headers: { Authorization: `Bearer ${token}` }
           })
         ])

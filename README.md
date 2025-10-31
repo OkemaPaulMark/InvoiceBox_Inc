@@ -33,8 +33,25 @@ A modern web-based invoicing platform connecting Providers and Purchasers with c
 - Node.js (v16 or higher)
 - Python 3.8+
 - npm or yarn
+- Docker & Docker Compose (for containerized setup)
 
 ## Quick Start
+
+### Option 1: Docker Setup (Recommended)
+
+1. Clone the repository and navigate to project directory
+
+2. Run with Docker Compose:
+```bash
+docker-compose up --build
+```
+
+3. Access the application:
+   - Frontend: `http://localhost:5173`
+   - Backend API: `http://localhost:8000`
+   - API Documentation: `http://localhost:8000/docs`
+
+### Option 2: Manual Setup
 
 ### Backend Setup
 
@@ -80,7 +97,26 @@ npm run dev
 
 Frontend runs on: `http://localhost:5173`
 
-## 👥 User Roles
+## Docker Commands
+
+```bash
+# Start services
+docker-compose up
+
+# Start services in background
+docker-compose up -d
+
+# Rebuild and start
+docker-compose up --build
+
+# Stop services
+docker-compose down
+
+# View logs
+docker-compose logs
+```
+
+## User Roles
 
 ### Provider
 - Create and manage invoices
@@ -121,32 +157,6 @@ Frontend runs on: `http://localhost:5173`
 2. **Payment Submitted** - Purchaser submits payment
 3. **Paid** - Provider confirms payment
 4. **Defaulted** - Payment failed or overdue
-
-## Development
-
-### Build Frontend
-```bash
-cd frontend
-npm run build
-```
-
-### Run Tests
-```bash
-cd frontend
-npm run lint
-```
-
-## License
-
-This project is licensed under the MIT License.
-
-## Contributing
-
-1. Fork the repository
-2. Create your feature branch
-3. Commit your changes
-4. Push to the branch
-5. Open a Pull Request
 
 ---
 
